@@ -14,17 +14,26 @@ void setup() {
 uint_fast8_t lastLeft = 0;
 uint_fast8_t lastRight = 0;
 
+int_fast16_t lastC = 0;
+int_fast16_t c = 0;
+
 void loop() {
 
   uint_fast8_t left = digitalRead(leftPin);
   uint_fast8_t right = digitalRead(rightPin);
 
-  if (lastLeft == left && lastRight == right) {
-    return;
+  if (left != lastLeft && right != lastRight) {
+    c = min(c + 1, 255);
   }
 
-  Serial.print(left);
-  Serial.print("\t");
-  Serial.print(right);
-  Serial.println();
+  if (left != lastLeft && right == lastRight) {
+    c = max(c - 1, 0);
+  }
+
+  if (lastC != c) {
+    lastLeft = left;
+    lastRight = right;
+    lastC = c;
+    Serial.println(c);
+  }
 }
